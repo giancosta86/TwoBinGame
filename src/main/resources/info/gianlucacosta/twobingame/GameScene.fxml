@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--^
+  ===========================================================================
+  TwoBinGame
+  ===========================================================================
+  Copyright (C) 2016 Gianluca Costa
+  ===========================================================================
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  ===========================================================================
+-->
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0"
+            prefWidth="594.0" xmlns="http://javafx.com/javafx/8.0.101" xmlns:fx="http://javafx.com/fxml/1">
+    <right>
+        <VBox prefHeight="351.0" prefWidth="177.0" BorderPane.alignment="CENTER">
+            <children>
+                <VBox fx:id="targetBox" prefHeight="142.0" prefWidth="157.0">
+                    <children>
+                        <Label fx:id="targetPromptLabel" styleClass="promptLabel" text="Target to minimize:"/>
+                        <Label fx:id="targetLabel" text="targetLabel">
+                            <VBox.margin>
+                                <Insets top="10.0"/>
+                            </VBox.margin>
+                        </Label>
+                        <Separator prefWidth="200.0">
+                            <VBox.margin>
+                                <Insets bottom="10.0" top="10.0"/>
+                            </VBox.margin>
+                        </Separator>
+                        <Label fx:id="bestTargetPromptLabel" styleClass="promptLabel" text="Best target found:"/>
+                        <Label fx:id="bestTargetLabel" text="Label">
+                            <VBox.margin>
+                                <Insets top="10.0"/>
+                            </VBox.margin>
+                        </Label>
+                    </children>
+                </VBox>
+                <Separator prefWidth="200.0">
+                    <VBox.margin>
+                        <Insets top="30.0"/>
+                    </VBox.margin>
+                </Separator>
+                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                    <children>
+                        <Button fx:id="commitButton" mnemonicParsing="false" onAction="#commit" prefHeight="38.0"
+                                text="Next problem"/>
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </VBox>
+    </right>
+    <center>
+        <SplitPane fx:id="gameSplitPane" dividerPositions="0.6217765042979942" orientation="VERTICAL" prefHeight="200.0"
+                   prefWidth="160.0" BorderPane.alignment="CENTER">
+            <items>
+                <ScrollPane fx:id="frameScrollPane" prefHeight="200.0" prefWidth="200.0"/>
+                <ScrollPane fx:id="galleryScrollPane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0"/>
+            </items>
+        </SplitPane>
+    </center>
+    <top>
+        <FlowPane fx:id="statusBox" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER_LEFT" prefHeight="40.0">
+                    <children>
+                        <Label fx:id="solverPromptLabel" styleClass="promptLabel" text="User:">
+                            <HBox.margin>
+                                <Insets right="5.0"/>
+                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="solverLabel" text="Label"/>
+                    </children>
+                </HBox>
+                <Separator orientation="VERTICAL" prefHeight="25.0">
+                    <FlowPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                    </FlowPane.margin>
+                </Separator>
+                <HBox alignment="CENTER_LEFT" prefHeight="40.0">
+                    <children>
+                        <Label fx:id="problemPromptLabel" styleClass="promptLabel" text="Problem:">
+                            <HBox.margin>
+                                <Insets right="5.0"/>
+                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="problemLabel" text="problemLabel"/>
+                    </children>
+                </HBox>
+                <Separator orientation="VERTICAL" prefHeight="25.0">
+                    <FlowPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                    </FlowPane.margin>
+                </Separator>
+                <HBox alignment="CENTER_LEFT" prefHeight="40.0">
+                    <children>
+                        <Label fx:id="frameModePromptLabel" styleClass="promptLabel" text="Mode:">
+                            <HBox.margin>
+                                <Insets right="5.0"/>
+                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="frameModeLabel" text="frameModeLabel"/>
+                    </children>
+                </HBox>
+                <Separator orientation="VERTICAL" prefHeight="25.0">
+                    <FlowPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                    </FlowPane.margin>
+                </Separator>
+                <HBox alignment="CENTER_LEFT" prefHeight="40.0">
+                    <children>
+                        <Label fx:id="timeRemainingPromptLabel" styleClass="promptLabel" text="Time remaining:">
+                            <HBox.margin>
+                                <Insets right="5.0"/>
+                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="timeRemainingLabel" text="timeLabel"/>
+                    </children>
+                </HBox>
+                <Separator orientation="VERTICAL" prefHeight="25.0">
+                    <FlowPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                    </FlowPane.margin>
+                </Separator>
+                <HBox alignment="CENTER_LEFT" prefHeight="40.0">
+                    <children>
+                        <Label fx:id="blocksPromptLabel" styleClass="promptLabel" text="blocksPromptLabel">
+                            <HBox.margin>
+                                <Insets right="5.0"/>
+                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="blocksLabel" text="blocksLabel"/>
+                    </children>
+                </HBox>
+                <Separator orientation="VERTICAL" prefHeight="25.0">
+                    <FlowPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                    </FlowPane.margin>
+                </Separator>
+                <HBox alignment="CENTER_LEFT" prefHeight="40.0">
+                    <children>
+                        <Label fx:id="resolutionPromptLabel" styleClass="promptLabel" text="Resolution:"/>
+                        <Slider fx:id="resolutionSlider" max="200.0" prefHeight="16.0" prefWidth="119.0" value="15.0">
+                            <HBox.margin>
+                                <Insets left="5.0" right="5.0"/>
+                            </HBox.margin>
+                        </Slider>
+                        <Label fx:id="resolutionLabel" text="Label"/>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </FlowPane>
+    </top>
+</BorderPane>

@@ -1,0 +1,103 @@
+/*^
+  ===========================================================================
+  TwoBinGame
+  ===========================================================================
+  Copyright (C) 2016 Gianluca Costa
+  ===========================================================================
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  ===========================================================================
+*/
+
+buildscript {
+    repositories {
+        maven {
+            url 'https://dl.bintray.com/giancosta86/Hephaestus'
+        }
+
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'info.gianlucacosta.moonlicense:moonlicense-gradle:5.0'
+        classpath 'info.gianlucacosta.moondeploy:moondeploy-gradle:3.4'
+        classpath 'info.gianlucacosta.aurora:aurora:8.0'
+
+        classpath 'com.github.maiflai:gradle-scalatest:0.14'
+    }
+}
+
+
+apply plugin: 'scala'
+apply plugin: 'application'
+
+apply plugin: 'com.github.maiflai.scalatest'
+
+apply plugin: 'info.gianlucacosta.moondeploy'
+apply plugin: 'info.gianlucacosta.moonlicense'
+apply plugin: 'info.gianlucacosta.aurora'
+
+
+group 'info.gianlucacosta.twobinpack'
+archivesBaseName = 'twobingame'
+version = '1.0'
+
+
+description = 'Game application for two-dimensional packing'
+
+ext.facebookPage = "https://www.facebook.com/TwoBinPack-234021307010796"
+
+
+mainClassName = "info.gianlucacosta.twobingame.App"
+
+
+dependencies {
+    generatedCompile 'org.scala-lang:scala-library:2.11.8'
+
+    compile 'org.scala-lang:scala-library:2.11.8'
+
+    compile 'info.gianlucacosta.twobinpack:twobinkernel:1.0'
+
+    testCompile 'org.scalatest:scalatest_2.11:2.2.6'
+    testRuntime 'org.pegdown:pegdown:1.6.0'
+}
+
+
+moonLicense {
+    license = gpl3
+
+    productInfo {
+        productName = 'TwoBinGame'
+        inceptionYear = 2016
+        copyrightHolder = 'Gianluca Costa'
+    }
+}
+
+
+aurora {
+    gitHubUser = 'giancosta86'
+
+    author {
+        name = 'Gianluca Costa'
+        email = 'gianluca@gianlucacosta.info'
+        url = 'http://gianlucacosta.info/'
+    }
+
+    javaVersion {
+        major = 1
+        minor = 8
+        build = 0
+        update = 101
+    }
+}
