@@ -44,6 +44,12 @@ import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.paint.Color
 import scalafx.stage.FileChooser
 
+
+private object GameController {
+  private val NoTimeLimitText =
+    "(no time limit)"
+}
+
 /**
   * The controller handling the game
   */
@@ -262,7 +268,7 @@ private class GameController {
 
         timeRemainingLabel.text.unbind()
         timeRemainingLabel.text =
-          "(no time limit)"
+          GameController.NoTimeLimitText
     }
 
     ()
@@ -375,6 +381,9 @@ private class GameController {
 
   @FXML
   def initialize(): Unit = {
+    timeRemainingLabel.text =
+      GameController.NoTimeLimitText
+
     resolutionSlider.min =
       Problem.MinResolution
 
