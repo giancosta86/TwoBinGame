@@ -49,6 +49,23 @@ import scalafx.stage.FileChooser
 private object GameController {
   private val NoTimeLimitText =
     "(no time limit)"
+
+  private def formatDuration(duration: Duration): String = {
+    val hours =
+      duration.toHours
+
+    val minutes =
+      duration.toMinutes % 60
+
+    val seconds =
+      duration.getSeconds % 60
+
+
+    if (hours > 0)
+      f"${hours}%02d:${minutes}%02d:${seconds}%02d"
+    else
+      f"${minutes}%02d:${seconds}%02d"
+  }
 }
 
 /**
@@ -66,10 +83,6 @@ private class GameController {
     title =
       "Save solutions..."
   }
-
-
-  private val reversedSolutions =
-    new SimpleObjectProperty[List[Solution]]
 
 
   private val _problemBundle =
@@ -118,14 +131,18 @@ private class GameController {
   private val problemOption =
     new SimpleObjectProperty[Option[Problem]](None)
 
-  problemOption.onChange {
-    bestSolutionOption() =
-      None
-  }
+
+  private val reversedSolutions =
+    new SimpleObjectProperty[List[Solution]]
 
 
   private val remainingProblems =
     new SimpleObjectProperty[List[Problem]](List())
+
+  remainingProblems.onChange {
+    bestSolutionOption() =
+      None
+  }
 
 
   private val frameOption =
@@ -151,16 +168,6 @@ private class GameController {
 
           frame.blocks
         )
-
-      targetOption <==
-        Bindings.createObjectBinding[Option[Int]](
-          () => {
-            solutionOption().flatMap(_.target)
-          },
-
-          solutionOption
-        )
-
 
       blocksLabel.text <==
         Bindings.createStringBinding(
@@ -222,20 +229,7 @@ private class GameController {
               val remainingDuration =
                 Duration.ofSeconds(secondsCountdownTimer.value())
 
-              val remainingHours =
-                remainingDuration.toHours
-
-              val remainingMinutes =
-                remainingDuration.toMinutes % 60
-
-              val remainingSeconds =
-                remainingDuration.getSeconds % 60
-
-
-              if (remainingHours > 0)
-                f"${remainingHours}%02d:${remainingMinutes}%02d:${remainingSeconds}%02d"
-              else
-                f"${remainingMinutes}%02d:${remainingSeconds}%02d"
+              GameController.formatDuration(remainingDuration)
             },
 
             secondsCountdownTimer.value
@@ -278,7 +272,6 @@ private class GameController {
 
   private val targetOption =
     new SimpleObjectProperty[Option[Int]](None)
-
 
   targetOption.onChange {
     updateBestSolutionOption()
@@ -412,6 +405,16 @@ private class GameController {
         },
 
         problemOption
+      )
+
+
+    targetOption <==
+      Bindings.createObjectBinding[Option[Int]](
+        () => {
+          solutionOption().flatMap(_.target)
+        },
+
+        solutionOption
       )
 
 
