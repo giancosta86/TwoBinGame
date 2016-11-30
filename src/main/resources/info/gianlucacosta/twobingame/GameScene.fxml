@@ -127,6 +127,21 @@
                 </Separator>
                 <HBox alignment="CENTER_LEFT" prefHeight="40.0">
                     <children>
+                        <Label fx:id="rotationPromptLabel" styleClass="promptLabel" text="Rotation:">
+                            <HBox.margin>
+                                <Insets right="5.0"/>
+                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="rotationLabel" text="rotationLabel"/>
+                    </children>
+                </HBox>
+                <Separator orientation="VERTICAL" prefHeight="25.0">
+                    <FlowPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                    </FlowPane.margin>
+                </Separator>
+                <HBox alignment="CENTER_LEFT" prefHeight="40.0">
+                    <children>
                         <Label fx:id="timeRemainingPromptLabel" styleClass="promptLabel" text="Time remaining:">
                             <HBox.margin>
                                 <Insets right="5.0"/>

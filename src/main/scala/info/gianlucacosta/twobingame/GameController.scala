@@ -513,6 +513,21 @@ private class GameController {
         frameOption
       )
 
+
+    rotationLabel.text <==
+      Bindings.createStringBinding(
+        () => {
+          problemOption().map(problem => {
+            if (problem.frameTemplate.blockPool.canRotateBlocks)
+              "Yes"
+            else
+              "No"
+          }).getOrElse("")
+        },
+        problemOption
+      )
+
+
     blocksPromptLabel.text <==
       Bindings.createStringBinding(
         () => {
@@ -628,6 +643,9 @@ private class GameController {
 
   @FXML
   var frameModeLabel: javafx.scene.control.Label = _
+
+  @FXML
+  var rotationLabel: javafx.scene.control.Label = _
 
   @FXML
   var timeRemainingPromptLabel: javafx.scene.control.Label = _
