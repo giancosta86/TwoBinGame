@@ -73,7 +73,7 @@
                             </Separator>
                             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                 <children>
-                                    <Button fx:id="commitButton" mnemonicParsing="false" onAction="#commit" prefHeight="38.0" text="Next problem" />
+                                    <Button fx:id="commitButton" minHeight="38.0" mnemonicParsing="false" onAction="#commit" prefHeight="38.0" text="Next problem" />
                                 </children>
                             </VBox>
                         </children>
