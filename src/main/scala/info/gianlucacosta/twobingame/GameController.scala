@@ -27,6 +27,7 @@ import java.time.Duration
 import javafx.beans.property.{ObjectProperty, SimpleObjectProperty}
 import javafx.fxml.FXML
 import javafx.scene.Node
+import javafx.scene.control.ScrollPane.ScrollBarPolicy
 import javafx.stage.Stage
 
 import info.gianlucacosta.helios.fx.Includes._
@@ -615,6 +616,24 @@ private class GameController {
               frame
             ).delegate
           }).orNull
+        },
+
+        frameOption
+      )
+
+
+    frameScrollPane.hbarPolicy <==
+      Bindings.createObjectBinding[ScrollBarPolicy](
+        () => {
+          frameOption().map(frame => {
+            frame.frameTemplate.frameMode match {
+              case FrameMode.Knapsack =>
+                ScrollBarPolicy.AS_NEEDED
+
+              case FrameMode.Strip =>
+                ScrollBarPolicy.ALWAYS
+            }
+          }).getOrElse(ScrollBarPolicy.AS_NEEDED)
         },
 
         frameOption
