@@ -607,8 +607,12 @@ private class GameController {
       )
 
 
-    gameSplitPane.visible <==
+    frameScrollPane.visible <==
       frameOption =!= None
+
+
+    galleryScrollPane.visible <==
+      frameScrollPane.visible
 
 
     frameScrollPane.content <==
