@@ -186,11 +186,14 @@ private class GameController {
       galleryScrollPane.content <==
         Bindings.createObjectBinding[Node](
           () => {
-            new BlockGalleryPane(
-              frame.blockGallery(),
-              problem.frameTemplate.colorPalette,
-              resolutionSlider.value().toInt
-            ).delegate
+            val blockGalleryPane =
+              new BlockGalleryPane(
+                frame.blockGallery(),
+                problem.frameTemplate.colorPalette,
+                resolutionSlider.value().toInt
+              )
+
+            blockGalleryPane.delegate
           },
 
           frame.blockGallery,
