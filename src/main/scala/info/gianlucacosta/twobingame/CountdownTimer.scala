@@ -25,6 +25,8 @@ package info.gianlucacosta.twobingame
 import java.time.Duration
 import javafx.beans.property.SimpleIntegerProperty
 
+import info.gianlucacosta.twobinpack.core.Problem
+
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.beans.property.ReadOnlyIntegerProperty
@@ -38,10 +40,11 @@ import scalafx.beans.property.ReadOnlyIntegerProperty
   * via <i>stop()</i> but, in the current implementation,
   * it cannot be restarted.
   *
-  * @param initialValue The inititial value
+  * @param problem      The problem to which the timer is related
+  * @param initialValue The initial value
   * @param interval     The interval between ticks
   */
-private class CountdownTimer(initialValue: Int, interval: Duration) {
+private class CountdownTimer(val problem: Problem, initialValue: Int, interval: Duration) {
 
   /**
     * The internal thread, updating the FX property
@@ -91,6 +94,7 @@ private class CountdownTimer(initialValue: Int, interval: Duration) {
   private var started =
     false
 
+  @volatile
   private var stopped =
     false
 

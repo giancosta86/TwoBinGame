@@ -256,7 +256,7 @@ private class GameController {
 
         secondsCountdownTimer.value.onChange {
           if (secondsCountdownTimer.value() == 0) {
-            registerSolution()
+            registerSolution(secondsCountdownTimer.problem)
           }
         }
 
@@ -299,7 +299,7 @@ private class GameController {
     problemOption() match {
       case Some(problem) =>
         if (canRegisterSolution) {
-          registerSolution()
+          registerSolution(problem)
         }
 
       case None =>
@@ -318,25 +318,30 @@ private class GameController {
     }
   }
 
-  private def registerSolution(): Unit = {
-    countdownTimerOption().foreach(countdownTimer =>
-      countdownTimer.stop()
-    )
+  private def registerSolution(targetProblem: Problem): Unit = {
+    if (problemOption().contains(targetProblem)) {
+      countdownTimerOption().foreach(countdownTimer => {
+        if (countdownTimer.problem == targetProblem) {
+          countdownTimer.stop()
+        }
+      })
 
-    val solution =
-      bestSolutionOption().getOrElse(
-        solutionOption().get
-      )
 
-    reversedSolutions() =
-      solution :: reversedSolutions()
+      val solution =
+        bestSolutionOption().getOrElse(
+          solutionOption().get
+        )
 
-    problemOption() =
-      remainingProblems().headOption
+      reversedSolutions() =
+        solution :: reversedSolutions()
 
-    if (remainingProblems().nonEmpty) {
-      remainingProblems() =
-        remainingProblems().tail
+      problemOption() =
+        remainingProblems().headOption
+
+      if (remainingProblems().nonEmpty) {
+        remainingProblems() =
+          remainingProblems().tail
+      }
     }
   }
 
@@ -430,6 +435,7 @@ private class GameController {
                 timeLimitInMinutes * 60
 
               new CountdownTimer(
+                problem,
                 timeLimitInSeconds,
                 Duration.ofSeconds(1)
               ) {
@@ -506,7 +512,6 @@ private class GameController {
         },
         frameOption
       )
-
 
     blocksPromptLabel.text <==
       Bindings.createStringBinding(
@@ -623,7 +628,6 @@ private class GameController {
 
   @FXML
   var frameModeLabel: javafx.scene.control.Label = _
-
 
   @FXML
   var timeRemainingPromptLabel: javafx.scene.control.Label = _
