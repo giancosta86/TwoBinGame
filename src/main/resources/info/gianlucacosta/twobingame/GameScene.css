@@ -29,6 +29,11 @@
 }
 
 
+.blockGalleryPane {
+    -fx-hgap: 10px;
+    -fx-vgap: 10px;
+}
+
 
 #frameScrollPane .scroll-bar {
     -fx-border-color: #bababa;

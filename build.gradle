@@ -51,7 +51,7 @@ apply plugin: 'info.gianlucacosta.aurora'
 
 group 'info.gianlucacosta.twobinpack'
 archivesBaseName = 'twobingame'
-version = '1.3'
+version = '1.4-SNAPSHOT'
 
 
 description = 'Game application for two-dimensional packing'
