@@ -7,7 +7,7 @@
 *TwoBinGame* is a visual application for interactively playing with two-dimensional problems, so as to discover optimal solutions; it is part of [TwoBinPack](https://github.com/giancosta86/TwoBinPack).
 
 
-![Game window](screenshots/GameStage.png)
+![Game window](images/screenshots/GameStage.png)
 
 
 ## Requirements
@@ -31,7 +31,7 @@ TwoBinGame is designed to be user-friendly and very intuitive; however, in case 
 
 ## Screenshots
 
-![Main window](screenshots/MainStage.png)
+![Main window](images/screenshots/MainStage.png)
 
 
 ## Further references
