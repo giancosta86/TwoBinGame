@@ -77,7 +77,7 @@ private class GameController {
 
   private val csvSolutionsFileChooser = new FileChooser {
     extensionFilters.setAll(
-      new FileChooser.ExtensionFilter("Solution file", s"*${FileExtensions.CsvSolutionFile}")
+      new FileChooser.ExtensionFilter("Solution file", s"*${FileExtensions.CsvSolutionFile_v2}")
     )
 
     title =
