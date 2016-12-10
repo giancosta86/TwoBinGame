@@ -30,6 +30,7 @@ import javafx.scene.Node
 import javafx.scene.control.ScrollPane.ScrollBarPolicy
 import javafx.stage.Stage
 
+import info.gianlucacosta.helios.Includes._
 import info.gianlucacosta.helios.fx.Includes._
 import info.gianlucacosta.helios.fx.dialogs.{Alerts, InputDialogs}
 import info.gianlucacosta.twobinpack.core.{FrameMode, Problem, ProblemBundle, Solution}
@@ -49,23 +50,6 @@ import scalafx.stage.FileChooser
 private object GameController {
   private val NoTimeLimitText =
     "(no time limit)"
-
-  private def formatDuration(duration: Duration): String = {
-    val hours =
-      duration.toHours
-
-    val minutes =
-      duration.toMinutes % 60
-
-    val seconds =
-      duration.getSeconds % 60
-
-
-    if (hours > 0)
-      f"${hours}%02d:${minutes}%02d:${seconds}%02d"
-    else
-      f"${minutes}%02d:${seconds}%02d"
-  }
 }
 
 /**
@@ -161,6 +145,7 @@ private class GameController {
               Solution(
                 problem,
                 solverOption(),
+                None,
                 frame.blocks()
               )
             )
@@ -232,7 +217,7 @@ private class GameController {
               val remainingDuration =
                 Duration.ofSeconds(secondsCountdownTimer.value())
 
-              GameController.formatDuration(remainingDuration)
+              remainingDuration.digitalFormat
             },
 
             secondsCountdownTimer.value
@@ -437,9 +422,9 @@ private class GameController {
       Bindings.createObjectBinding[Option[CountdownTimer]](
         () => {
           problemOption().flatMap(problem => {
-            problem.timeLimitInMinutesOption.map(timeLimitInMinutes => {
+            problem.timeLimitOption.map(timeLimit => {
               val timeLimitInSeconds =
-                timeLimitInMinutes * 60
+                timeLimit.getSeconds.toInt
 
               new CountdownTimer(
                 problem,

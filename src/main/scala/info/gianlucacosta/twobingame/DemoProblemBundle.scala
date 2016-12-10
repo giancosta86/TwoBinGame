@@ -22,6 +22,8 @@
 
 package info.gianlucacosta.twobingame
 
+import java.time.Duration
+
 import info.gianlucacosta.twobinpack.core._
 
 /**
@@ -56,7 +58,9 @@ private object DemoProblemBundle extends ProblemBundle(List(
       40
     ),
 
-    Some(2),
+    Some(
+      Duration.ofMinutes(2)
+    ),
 
     "Example problem"
   )
