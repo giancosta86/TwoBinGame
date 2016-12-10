@@ -60,7 +60,7 @@ private class MainScene(appInfo: AppInfo, primaryStage: Stage) extends Scene {
 
   private val problemBundleFileChooser = new FileChooser {
     extensionFilters.setAll(
-      new FileChooser.ExtensionFilter("Problem bundle", s"*${FileExtensions.ProblemBundle}")
+      new FileChooser.ExtensionFilter("Problem bundle", s"*${FileExtensions.ProblemBundle_v2}")
     )
 
     title =
