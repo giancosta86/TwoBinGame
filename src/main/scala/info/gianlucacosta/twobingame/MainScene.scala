@@ -71,7 +71,7 @@ private class MainScene(appInfo: AppInfo, primaryStage: Stage) extends Scene {
   root =
     new BorderPane {
       style =
-        "-fx-background-color: linear-gradient(to bottom right, #dde9ff, #a9efaa);"
+        "-fx-background-color: linear-gradient(to bottom right, #e9f1ff, #91de92);"
 
       padding =
         Insets(30)
