@@ -33,7 +33,7 @@ import javafx.stage.Stage
 import info.gianlucacosta.helios.Includes._
 import info.gianlucacosta.helios.fx.Includes._
 import info.gianlucacosta.helios.fx.dialogs.{Alerts, InputDialogs}
-import info.gianlucacosta.helios.fx.time.Clock
+import info.gianlucacosta.helios.fx.time.BasicClock
 import info.gianlucacosta.twobinpack.core.{FrameMode, Problem, ProblemBundle, Solution}
 import info.gianlucacosta.twobinpack.io.FileExtensions
 import info.gianlucacosta.twobinpack.io.csv.v2.SolutionCsvWriter2
@@ -54,7 +54,7 @@ private class GameController {
   var stage: Stage = _
 
   private[twobingame] val clock =
-    new Clock(Duration.ofSeconds(1))
+    new BasicClock(Duration.ofSeconds(1))
 
 
   private val csvSolutionsFileChooser = new FileChooser {
@@ -213,7 +213,7 @@ private class GameController {
   private val elapsedTime =
     new SimpleObjectProperty[Duration](Duration.ZERO)
 
-  val remainingTimeOption =
+  private val remainingTimeOption =
     new SimpleObjectProperty[Option[Duration]](None)
 
 
@@ -234,11 +234,11 @@ private class GameController {
     new SimpleObjectProperty[Option[Int]](None)
 
   targetOption.onChange {
-    updateBestSolutionOption()
+    checkForBestSolution()
   }
 
 
-  private def updateBestSolutionOption(): Unit = {
+  private def checkForBestSolution(): Unit = {
     targetOption().foreach(target => {
       if (target < bestTargetOption().getOrElse(Int.MaxValue)) {
         bestSolutionOption() =
@@ -265,8 +265,14 @@ private class GameController {
     if (bestTargetOption().isDefined)
       true
     else {
+      val questionPrompt =
+        if (remainingProblems().isEmpty)
+          "Do you really want to end the test?"
+        else
+          "Do you really want to skip to the next problem?"
+
       val confirmationOption =
-        InputDialogs.askYesNoCancel("You still have not found a valid solution!\nDo you really want to save the current solution?")
+        InputDialogs.askYesNoCancel(s"You still have not found a valid solution!\n${questionPrompt}")
 
       confirmationOption.contains(true)
     }
@@ -354,9 +360,12 @@ private class GameController {
       Bindings.createObjectBinding(
         () => {
           problemOption().flatMap(problem =>
-            problem.timeLimitOption.map(timeLimit =>
-              timeLimit - elapsedTime(): Duration
-            )
+            problem.timeLimitOption.map(timeLimit => {
+              val remainingTime: Duration =
+                timeLimit - elapsedTime()
+
+              remainingTime
+            })
           )
         },
 
