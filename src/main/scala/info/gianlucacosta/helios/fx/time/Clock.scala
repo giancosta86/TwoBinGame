@@ -20,48 +20,45 @@
   ===========================================================================
 */
 
-package info.gianlucacosta.twobingame
+package info.gianlucacosta.helios.fx.time
 
 import java.time.Duration
 import javafx.beans.property.SimpleIntegerProperty
 
-import info.gianlucacosta.twobinpack.core.Problem
-
+import scala.annotation.tailrec
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.beans.property.ReadOnlyIntegerProperty
 
 /**
-  * Simple countdown timer exposing an FX <i>value</i> property,
-  * which is decreased at each tick by a daemon thread.
+  * Simple clock exposing an FX <i>ticks</i> property,
+  * which is increased at each tick by a daemon thread.
   *
-  * The timer must be started via <i>start()</i>, and automatically
-  * stops as soon as its value gets 0; it can also be stopped
-  * via <i>stop()</i> but, in the current implementation,
-  * it cannot be restarted.
+  * The timer must be started via <i>start()</i> and
+  * should then be stopped via <i>stop()</i> when it is no
+  * more needed.
   *
-  * @param problem      The problem to which the timer is related
-  * @param initialValue The initial value
-  * @param interval     The interval between ticks
+  * To reset the ticks to 0, one should call the reset() button.
+  *
+  * @param interval The interval between ticks
   */
-private class CountdownTimer(val problem: Problem, initialValue: Int, interval: Duration) {
+class Clock(interval: Duration) {
 
   /**
     * The internal thread, updating the FX property
     */
-  private class CountdownThread extends Thread(
+  private class TickThread extends Thread(
     new Runnable {
+      @tailrec
       override def run(): Unit = {
-        while (!stopped) {
-          Platform.runLater {
-            _value() -= 1
-          }
-
-          if (value() == 0) {
-            CountdownTimer.this.stop()
-          }
-
+        if (!stopped) {
           Thread.sleep(intervalInMillis)
+
+          Platform.runLater {
+            _ticks() += 1
+          }
+
+          run()
         }
       }
     }
@@ -70,25 +67,20 @@ private class CountdownTimer(val problem: Problem, initialValue: Int, interval: 
   }
 
 
-  require(
-    initialValue >= 0,
-    "The initial value must be >= 0"
-  )
-
   private val intervalInMillis =
     interval.toMillis
 
   require(
-    intervalInMillis >= 0,
-    "The interval must be >= 0"
+    intervalInMillis > 0,
+    "The interval must be > 0"
   )
 
 
-  private val _value =
-    new SimpleIntegerProperty(initialValue)
+  private val _ticks =
+    new SimpleIntegerProperty(0)
 
-  def value: ReadOnlyIntegerProperty =
-    _value
+  def ticks: ReadOnlyIntegerProperty =
+    _ticks
 
 
   private var started =
@@ -100,7 +92,7 @@ private class CountdownTimer(val problem: Problem, initialValue: Int, interval: 
 
 
   /**
-    * Starts the timer after creation.
+    * Starts the clock after creation.
     * After the first call, its does nothing.
     */
   def start(): Unit = {
@@ -108,23 +100,28 @@ private class CountdownTimer(val problem: Problem, initialValue: Int, interval: 
       started =
         true
 
-      if (value() > 0) {
-        new CountdownThread {
-          start()
-        }
+      new TickThread {
+        start()
       }
     }
   }
 
 
   /**
-    * Stops the timer, if it was started and not stopped;
+    * Stops the clock, if it was started and not stopped;
     * otherwise, it does just nothing
     */
   def stop(): Unit = {
-    if (started && !stopped) {
-      stopped =
-        true
-    }
+    stopped =
+      true
+  }
+
+
+  /**
+    * Resets the ticks without stopping the clock
+    */
+  def reset(): Unit = {
+    _ticks() = 0
   }
 }
+

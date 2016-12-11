@@ -94,9 +94,7 @@ private class GameStage(
 
   handleEvent(WindowEvent.WindowHidden) {
     (event: WindowEvent) => {
-      currentController.countdownTimerOption().foreach(countdownTimer => {
-        countdownTimer.stop()
-      })
+      currentController.clock.stop()
 
       event.consume()
     }

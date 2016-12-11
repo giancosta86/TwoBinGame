@@ -24,7 +24,7 @@ package info.gianlucacosta.twobingame
 
 import java.io.FileWriter
 import java.time.Duration
-import javafx.beans.property.{ObjectProperty, SimpleObjectProperty}
+import javafx.beans.property.{ObjectProperty, SimpleBooleanProperty, SimpleObjectProperty}
 import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.ScrollPane.ScrollBarPolicy
@@ -33,9 +33,10 @@ import javafx.stage.Stage
 import info.gianlucacosta.helios.Includes._
 import info.gianlucacosta.helios.fx.Includes._
 import info.gianlucacosta.helios.fx.dialogs.{Alerts, InputDialogs}
+import info.gianlucacosta.helios.fx.time.Clock
 import info.gianlucacosta.twobinpack.core.{FrameMode, Problem, ProblemBundle, Solution}
 import info.gianlucacosta.twobinpack.io.FileExtensions
-import info.gianlucacosta.twobinpack.io.csv.SolutionCsvWriter
+import info.gianlucacosta.twobinpack.io.csv.v2.SolutionCsvWriter2
 import info.gianlucacosta.twobinpack.rendering.frame.Frame
 import info.gianlucacosta.twobinpack.rendering.frame.axes.AxesPane
 import info.gianlucacosta.twobinpack.rendering.gallery.BlockGalleryPane
@@ -46,17 +47,14 @@ import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.paint.Color
 import scalafx.stage.FileChooser
 
-
-private object GameController {
-  private val NoTimeLimitText =
-    "(no time limit)"
-}
-
 /**
   * The controller handling the game
   */
 private class GameController {
   var stage: Stage = _
+
+  private[twobingame] val clock =
+    new Clock(Duration.ofSeconds(1))
 
 
   private val csvSolutionsFileChooser = new FileChooser {
@@ -123,11 +121,6 @@ private class GameController {
   private val remainingProblems =
     new SimpleObjectProperty[List[Problem]](List())
 
-  remainingProblems.onChange {
-    bestSolutionOption() =
-      None
-  }
-
 
   private val frameOption =
     new SimpleObjectProperty[Option[Frame]](None)
@@ -138,21 +131,34 @@ private class GameController {
       val problem =
         problemOption().get
 
-      solutionOption <==
-        Bindings.createObjectBinding(
-          () => {
-            Some(
-              Solution(
-                problem,
-                solverOption(),
-                None,
-                frame.blocks()
-              )
-            )
-          },
-
-          frame.blocks
+      solutionOption() =
+        Some(
+          new Solution(
+            problem,
+            solverOption(),
+            Some(Duration.ZERO),
+            Set()
+          )
         )
+
+
+      frame.blocks.onChange {
+        solutionOption() =
+          Some(
+            new Solution(
+              problem,
+              solverOption(),
+              Some(
+                elapsedTime()
+              ),
+              frame.blocks()
+            )
+          )
+      }
+
+      bestSolutionOption() =
+        None
+
 
       blocksLabel.text <==
         Bindings.createStringBinding(
@@ -203,59 +209,25 @@ private class GameController {
   private val bestTargetOption =
     new SimpleObjectProperty[Option[Int]](None)
 
-  private[twobingame] val countdownTimerOption =
-    new SimpleObjectProperty[Option[CountdownTimer]](None)
+
+  private val elapsedTime =
+    new SimpleObjectProperty[Duration](Duration.ZERO)
+
+  val remainingTimeOption =
+    new SimpleObjectProperty[Option[Duration]](None)
 
 
-  countdownTimerOption.onChange {
-    countdownTimerOption() match {
-
-      case Some(secondsCountdownTimer) =>
-        timeRemainingLabel.text <==
-          Bindings.createStringBinding(
-            () => {
-              val remainingDuration =
-                Duration.ofSeconds(secondsCountdownTimer.value())
-
-              remainingDuration.digitalFormat
-            },
-
-            secondsCountdownTimer.value
-          )
-
-
-        timeRemainingLabel.textFill <==
-          Bindings.createObjectBinding[javafx.scene.paint.Paint](
-            () => {
-              if (secondsCountdownTimer.value() <= 60)
-                Color.Crimson.delegate
-              else
-                Color.Black.delegate
-            },
-
-            secondsCountdownTimer.value
-          )
-
-
-        secondsCountdownTimer.value.onChange {
-          if (secondsCountdownTimer.value() == 0) {
-            registerSolution(secondsCountdownTimer.problem)
-          }
-        }
-
-
-      case None =>
-        timeRemainingLabel.textFill.unbind()
-        timeRemainingLabel.textFill =
-          Color.Black
-
-        timeRemainingLabel.text.unbind()
-        timeRemainingLabel.text =
-          GameController.NoTimeLimitText
-    }
-
-    ()
+  remainingTimeOption.onChange {
+    remainingTimeOption().foreach(remainingTime => {
+      if (remainingTime.isZero) {
+        registerSolution(problemOption().get)
+      }
+    })
   }
+
+
+  private val timeExpiring =
+    new SimpleBooleanProperty(false)
 
 
   private val targetOption =
@@ -302,12 +274,7 @@ private class GameController {
 
   private def registerSolution(targetProblem: Problem): Unit = {
     if (problemOption().contains(targetProblem)) {
-      countdownTimerOption().foreach(countdownTimer => {
-        if (countdownTimer.problem == targetProblem) {
-          countdownTimer.stop()
-        }
-      })
-
+      clock.reset()
 
       val solution =
         bestSolutionOption().getOrElse(
@@ -344,7 +311,7 @@ private class GameController {
 
       try {
         val solutionsWriter =
-          new SolutionCsvWriter(new FileWriter(solutionsFile))
+          new SolutionCsvWriter2(new FileWriter(solutionsFile))
 
         try {
           solutions.foreach(solutionsWriter.writeSolution)
@@ -368,14 +335,46 @@ private class GameController {
 
   @FXML
   def initialize(): Unit = {
-    timeRemainingLabel.text =
-      GameController.NoTimeLimitText
-
     resolutionSlider.min =
       Problem.MinResolution
 
     resolutionSlider.max =
       Problem.MaxResolution
+
+
+    elapsedTime <==
+      Bindings.createObjectBinding(
+        () =>
+          Duration.ofSeconds(clock.ticks()),
+
+        clock.ticks
+      )
+
+    remainingTimeOption <==
+      Bindings.createObjectBinding(
+        () => {
+          problemOption().flatMap(problem =>
+            problem.timeLimitOption.map(timeLimit =>
+              timeLimit - elapsedTime(): Duration
+            )
+          )
+        },
+
+        problemOption,
+        elapsedTime
+      )
+
+
+    timeExpiring <==
+      Bindings.createBooleanBinding(
+        () => {
+          remainingTimeOption().exists(remainingTime => {
+            remainingTime < Duration.ofMinutes(1)
+          })
+        },
+
+        remainingTimeOption
+      )
 
 
     frameOption <==
@@ -418,29 +417,6 @@ private class GameController {
       )
 
 
-    countdownTimerOption <==
-      Bindings.createObjectBinding[Option[CountdownTimer]](
-        () => {
-          problemOption().flatMap(problem => {
-            problem.timeLimitOption.map(timeLimit => {
-              val timeLimitInSeconds =
-                timeLimit.getSeconds.toInt
-
-              new CountdownTimer(
-                problem,
-                timeLimitInSeconds,
-                Duration.ofSeconds(1)
-              ) {
-                start()
-              }
-            })
-          })
-        },
-
-        problemOption
-      )
-
-
     solverLabel.text <==
       Bindings.createStringBinding(
         () => {
@@ -448,6 +424,91 @@ private class GameController {
         },
 
         solverOption
+      )
+
+
+    remainingTimeIndicator.progress <==
+      Bindings.createDoubleBinding(
+        () => {
+          problemOption()
+            .flatMap(problem =>
+              problem.timeLimitOption.flatMap(timeLimit =>
+                remainingTimeOption().map(remainingTime =>
+                  remainingTime.getSeconds.toDouble / timeLimit.getSeconds
+                )
+              )
+            )
+            .getOrElse(1.0)
+        },
+
+        problemOption,
+        remainingTimeOption
+      )
+
+
+    remainingTimeIndicator.style <==
+      when(timeExpiring) choose {
+        "-fx-progress-color: #c11717;"
+      } otherwise {
+        "-fx-progress-color: #66ae80;"
+      }
+
+
+    remainingTimeLabel.text <==
+      Bindings.createStringBinding(
+        () => {
+          remainingTimeOption()
+            .map(remainingTime => {
+              remainingTime.digitalFormat
+            })
+            .getOrElse("(no time limit)")
+
+        },
+
+        remainingTimeOption
+      )
+
+
+    remainingTimeLabel.textFill <==
+      Bindings.createObjectBinding[javafx.scene.paint.Paint](
+        () => {
+          if (timeExpiring())
+            Color.Crimson.delegate
+          else
+            Color.Black.delegate
+        },
+
+
+        timeExpiring
+      )
+
+
+    remainingTimePromptLabel.textFill <==
+      remainingTimeLabel.textFill
+
+
+    remainingTimeBox.managed <==
+      remainingTimeOption =!= None
+
+
+    remainingTimeBox.visible <==
+      remainingTimeBox.managed
+
+
+    elapsedTimeBox.managed <==
+      !remainingTimeBox.managed
+
+    elapsedTimeBox.visible <==
+      elapsedTimeBox.managed
+
+
+    elapsedTimeLabel.text <==
+      Bindings.createStringBinding(
+        () => {
+          elapsedTime().digitalFormat
+        },
+
+        elapsedTime
       )
 
 
@@ -536,14 +597,11 @@ private class GameController {
         problemOption
       )
 
-    timeRemainingPromptLabel.textFill <==
-      timeRemainingLabel.textFill
-
 
     resolutionLabel.text <==
       Bindings.createStringBinding(
         () =>
-          s"${resolutionSlider.value().toInt} px",
+          s"${resolutionSlider.value().toInt}",
 
         resolutionSlider.value
       )
@@ -552,7 +610,7 @@ private class GameController {
     statusBox.visible <==
       problemOption =!= None
 
-    targetBox.visible <==
+    sideBox.visible <==
       problemOption =!= None
 
 
@@ -633,6 +691,8 @@ private class GameController {
 
         frameOption
       )
+
+    clock.start()
   }
 
 
@@ -661,12 +721,6 @@ private class GameController {
   @FXML
   var rotationLabel: javafx.scene.control.Label = _
 
-  @FXML
-  var timeRemainingPromptLabel: javafx.scene.control.Label = _
-
-  @FXML
-  var timeRemainingLabel: javafx.scene.control.Label = _
-
 
   @FXML
   var blocksPromptLabel: javafx.scene.control.Label = _
@@ -683,7 +737,7 @@ private class GameController {
 
 
   @FXML
-  var targetBox: javafx.scene.layout.VBox = _
+  var sideBox: javafx.scene.layout.VBox = _
 
 
   @FXML
@@ -694,6 +748,28 @@ private class GameController {
 
   @FXML
   var bestTargetLabel: javafx.scene.control.Label = _
+
+  @FXML
+  var remainingTimeBox: javafx.scene.layout.VBox = _
+
+  @FXML
+  var remainingTimeIndicator: javafx.scene.control.ProgressIndicator = _
+
+  @FXML
+  var remainingTimePromptLabel: javafx.scene.control.Label = _
+
+  @FXML
+  var remainingTimeLabel: javafx.scene.control.Label = _
+
+
+  @FXML
+  var elapsedTimeBox: javafx.scene.layout.VBox = _
+
+  @FXML
+  var elapsedTimePromptLabel: javafx.scene.control.Label = _
+
+  @FXML
+  var elapsedTimeLabel: javafx.scene.control.Label = _
 
 
   @FXML

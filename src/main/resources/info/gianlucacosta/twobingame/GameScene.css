@@ -53,3 +53,9 @@
     -fx-border-width: 1px;
     -fx-border-color: darkgray;
 }
+
+
+#remainingTimeIndicator .percentage{
+    -fx-font-size: 1px;
+    -fx-fill: -fx-text-background-color;
+}

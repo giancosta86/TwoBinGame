@@ -25,8 +25,8 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0"
-            prefWidth="594.0" xmlns="http://javafx.com/javafx/8.0.101" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0"
+            prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.101" xmlns:fx="http://javafx.com/fxml/1">
     <center>
         <SplitPane fx:id="gameSplitPane" dividerPositions="0.6217765042979942" orientation="VERTICAL" prefHeight="200.0"
                    prefWidth="160.0" BorderPane.alignment="CENTER">
@@ -39,34 +39,92 @@
                     <right>
                         <VBox prefHeight="351.0" prefWidth="177.0" BorderPane.alignment="CENTER">
                             <children>
-                                <VBox fx:id="targetBox" prefHeight="142.0" prefWidth="157.0">
+                                <VBox fx:id="sideBox" prefHeight="142.0" prefWidth="150.0">
                                     <children>
-                                        <Label fx:id="targetPromptLabel" styleClass="promptLabel"
-                                               text="Target to minimize:"/>
-                                        <Label fx:id="targetLabel" text="targetLabel">
+                                        <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="40.0">
+                                            <children>
+                                                <Label fx:id="targetPromptLabel" styleClass="promptLabel"
+                                                       text="Target to minimize:">
+                                                    <VBox.margin>
+                                                        <Insets top="7.0"/>
+                                                    </VBox.margin>
+                                                </Label>
+                                                <Label fx:id="targetLabel" text="targetLabel">
+                                                    <VBox.margin>
+                                                        <Insets top="5.0"/>
+                                                    </VBox.margin>
+                                                </Label>
+                                                <Label fx:id="bestTargetPromptLabel" styleClass="promptLabel"
+                                                       text="Best target found:">
+                                                    <VBox.margin>
+                                                        <Insets top="15.0"/>
+                                                    </VBox.margin>
+                                                </Label>
+                                                <Label fx:id="bestTargetLabel" text="bestTargetLabel">
+                                                    <VBox.margin>
+                                                        <Insets top="5.0"/>
+                                                    </VBox.margin>
+                                                </Label>
+                                            </children>
                                             <VBox.margin>
-                                                <Insets top="10.0"/>
+                                                <Insets bottom="15.0"/>
                                             </VBox.margin>
-                                        </Label>
+                                        </VBox>
+                                        <Separator prefWidth="200.0">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0"/>
+                                            </VBox.margin>
+                                        </Separator>
+                                        <VBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="15.0">
+                                            <children>
+                                                <VBox fx:id="remainingTimeBox" alignment="CENTER" prefHeight="200.0"
+                                                      prefWidth="100.0">
+                                                    <children>
+                                                        <ProgressIndicator fx:id="remainingTimeIndicator"
+                                                                           minHeight="100.0" minWidth="100.0"
+                                                                           progress="0.59">
+                                                            <VBox.margin>
+                                                                <Insets/>
+                                                            </VBox.margin>
+                                                        </ProgressIndicator>
+                                                        <Label fx:id="remainingTimePromptLabel" styleClass="promptLabel"
+                                                               text="Time remaining:">
+                                                            <VBox.margin>
+                                                                <Insets top="-7.0"/>
+                                                            </VBox.margin>
+                                                        </Label>
+                                                        <Label fx:id="remainingTimeLabel" text="remainingTimeLabel">
+                                                            <VBox.margin>
+                                                                <Insets top="5.0"/>
+                                                            </VBox.margin>
+                                                        </Label>
+                                                    </children>
+                                                </VBox>
+                                                <VBox fx:id="elapsedTimeBox" alignment="CENTER" prefHeight="200.0"
+                                                      prefWidth="100.0">
+                                                    <children>
+                                                        <Label fx:id="elapsedTimePromptLabel" styleClass="promptLabel"
+                                                               text="Time elapsed:">
+                                                            <VBox.margin>
+                                                                <Insets/>
+                                                            </VBox.margin>
+                                                        </Label>
+                                                        <Label fx:id="elapsedTimeLabel" text="timeLabel">
+                                                            <VBox.margin>
+                                                                <Insets top="5.0"/>
+                                                            </VBox.margin>
+                                                        </Label>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </VBox>
                                         <Separator prefWidth="200.0">
                                             <VBox.margin>
                                                 <Insets bottom="10.0" top="10.0"/>
                                             </VBox.margin>
                                         </Separator>
-                                        <Label fx:id="bestTargetPromptLabel" styleClass="promptLabel"
-                                               text="Best target found:"/>
-                                        <Label fx:id="bestTargetLabel" text="Label">
-                                            <VBox.margin>
-                                                <Insets top="10.0"/>
-                                            </VBox.margin>
-                                        </Label>
                                     </children>
                                 </VBox>
-                                <Separator prefWidth="200.0">
-                                    <VBox.margin>
-                                        <Insets bottom="15.0" top="15.0"/>
-                                    </VBox.margin>
-                                </Separator>
                                 <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                     <children>
                                         <Button fx:id="commitButton" minHeight="38.0" mnemonicParsing="false"
@@ -140,21 +198,6 @@
                             </HBox.margin>
                         </Label>
                         <Label fx:id="rotationLabel" text="rotationLabel"/>
-                    </children>
-                </HBox>
-                <Separator orientation="VERTICAL" prefHeight="25.0">
-                    <FlowPane.margin>
-                        <Insets left="10.0" right="10.0"/>
-                    </FlowPane.margin>
-                </Separator>
-                <HBox alignment="CENTER_LEFT" prefHeight="40.0">
-                    <children>
-                        <Label fx:id="timeRemainingPromptLabel" styleClass="promptLabel" text="Time remaining:">
-                            <HBox.margin>
-                                <Insets right="5.0"/>
-                            </HBox.margin>
-                        </Label>
-                        <Label fx:id="timeRemainingLabel" text="timeLabel"/>
                     </children>
                 </HBox>
                 <Separator orientation="VERTICAL" prefHeight="25.0">
