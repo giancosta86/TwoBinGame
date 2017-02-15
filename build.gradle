@@ -2,7 +2,7 @@
   ===========================================================================
   TwoBinGame
   ===========================================================================
-  Copyright (C) 2016 Gianluca Costa
+  Copyright (C) 2016-2017 Gianluca Costa
   ===========================================================================
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as
@@ -51,7 +51,7 @@ apply plugin: 'info.gianlucacosta.aurora'
 
 group 'info.gianlucacosta.twobinpack'
 archivesBaseName = 'twobingame'
-version = '2.0'
+version = '2.1'
 
 
 description = 'Game application for two-dimensional packing'
@@ -67,7 +67,7 @@ dependencies {
 
     compile 'org.scala-lang:scala-library:2.11.8'
 
-    compile 'info.gianlucacosta.twobinpack:twobinkernel:2.0'
+    compile 'info.gianlucacosta.twobinpack:twobinkernel:2.2'
 
     testCompile 'org.scalatest:scalatest_2.11:2.2.6'
     testRuntime 'org.pegdown:pegdown:1.6.0'
