@@ -20,7 +20,7 @@
   ===========================================================================
 */
 
-package info.gianlucacosta.twobingame
+package info.gianlucacosta.twobingame.game
 
 import java.io.FileWriter
 import java.time.Duration

@@ -20,7 +20,7 @@
   ===========================================================================
 */
 
-package info.gianlucacosta.twobingame
+package info.gianlucacosta.twobingame.main
 
 import java.io.{BufferedReader, FileReader}
 import javafx.stage.Stage
@@ -29,6 +29,8 @@ import info.gianlucacosta.helios.apps.AppInfo
 import info.gianlucacosta.helios.fx.Includes._
 import info.gianlucacosta.helios.fx.dialogs.Alerts
 import info.gianlucacosta.helios.fx.dialogs.about.AboutBox
+import info.gianlucacosta.twobingame.DemoProblemBundle
+import info.gianlucacosta.twobingame.game.GameStage
 import info.gianlucacosta.twobinpack.core.ProblemBundle
 import info.gianlucacosta.twobinpack.io.FileExtensions
 import info.gianlucacosta.twobinpack.io.bundle.ProblemBundleReader
@@ -49,7 +51,7 @@ import scalafx.stage.FileChooser
   * @param appInfo      Product information about the app
   * @param primaryStage The primary stage provided by the FX framework
   */
-private class MainScene(appInfo: AppInfo, primaryStage: Stage) extends Scene {
+class MainScene(appInfo: AppInfo, primaryStage: Stage) extends Scene {
   private val gameStage: GameStage =
     new GameStage(appInfo, primaryStage)
 

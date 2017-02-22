@@ -20,7 +20,7 @@
   ===========================================================================
 */
 
-package info.gianlucacosta.twobingame
+package info.gianlucacosta.twobingame.game
 
 import javafx.scene.layout.BorderPane
 
@@ -40,10 +40,10 @@ import scalafx.stage.WindowEvent
   * @param appInfo
   * @param previousStage
   */
-private class GameStage(
-                         appInfo: AppInfo,
-                         val previousStage: javafx.stage.Stage
-                       ) extends StackedStage {
+class GameStage(
+                 appInfo: AppInfo,
+                 val previousStage: javafx.stage.Stage
+               ) extends StackedStage {
 
   title =
     appInfo.name

@@ -26,6 +26,7 @@ import javafx.stage.Stage
 
 import info.gianlucacosta.helios.apps.{AppInfo, AuroraAppInfo}
 import info.gianlucacosta.helios.fx.application.{AppBase, SplashStage}
+import info.gianlucacosta.twobingame.main.MainScene
 import info.gianlucacosta.twobinpack.icons.MainIcon
 import info.gianlucacosta.twobinpack.twobingame.ArtifactInfo
 
