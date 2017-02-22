@@ -20,26 +20,33 @@
   ===========================================================================
 */
 
-package info.gianlucacosta.twobingame.main
-
-import javafx.scene.layout.BorderPane
-import javafx.stage.Stage
-
-import info.gianlucacosta.helios.apps.AppInfo
-import info.gianlucacosta.helios.fx.scene.fxml.FxmlScene
-
-
-class MainScene(
-                 appInfo: AppInfo,
-                 primaryStage: Stage
-               ) extends FxmlScene[MainController, BorderPane](
-  classOf[MainController]
-) {
-  override protected def preInitialize(): Unit = {
-    controller.appInfo =
-      appInfo
-
-    controller.stage =
-      primaryStage
-  }
+#rootPane {
+    -fx-background-color: linear-gradient(to bottom right, #e9f1ff, #91de92);
+    -fx-pref-height: 450px;
 }
+
+#titleLabel {
+    -fx-text-fill: linear-gradient(to bottom, mediumslateblue, cornflowerblue);
+    -fx-font-family: "Arial";
+    -fx-font-size: 56px;
+    -fx-font-weight: bold;
+    -fx-padding: 20px 0 0 0;
+}
+
+
+#buttonsPane {
+    -fx-padding: 20;
+}
+
+
+#playButton {
+    -fx-pref-width: 400px;
+    -fx-pref-height: 70px;
+}
+
+
+.button {
+    -fx-pref-width: 250px;
+    -fx-pref-height: 45px;
+}
+
