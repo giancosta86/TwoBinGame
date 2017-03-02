@@ -29,6 +29,7 @@ import info.gianlucacosta.helios.fx.Includes._
 import info.gianlucacosta.helios.fx.dialogs.InputDialogs
 import info.gianlucacosta.helios.fx.scene.fxml.FxmlScene
 import info.gianlucacosta.helios.fx.stage.StackedStage
+import info.gianlucacosta.twobinmanager.sdk.server.TwoBinManagerServer
 import info.gianlucacosta.twobinpack.core.ProblemBundle
 
 import scalafx.Includes._
@@ -52,12 +53,16 @@ class GameStage(
 
   private var currentController: GameController = _
 
+
   /**
     * Starts a new game
     *
     * @param problemBundle The problem bundle
+    * @param managerServerOption Connection to a TwoBinManager server
     */
-  def startGame(problemBundle: ProblemBundle) = {
+  def startGame(
+                 problemBundle: ProblemBundle,
+                 managerServerOption: Option[TwoBinManagerServer]): Unit = {
     val fxmlScene =
       new FxmlScene[GameController, BorderPane](classOf[GameController]) {
         override protected def preInitialize(): Unit = {
@@ -66,6 +71,9 @@ class GameStage(
 
           controller.stage =
             GameStage.this
+
+          controller.managerServerOption =
+            managerServerOption
 
           controller.problemBundle =
             problemBundle

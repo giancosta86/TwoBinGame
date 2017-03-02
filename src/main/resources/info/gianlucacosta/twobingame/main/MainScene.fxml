@@ -22,28 +22,27 @@
   ===========================================================================
 -->
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-
-<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.101" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.101"
+            xmlns:fx="http://javafx.com/fxml/1">
     <top>
-        <Label fx:id="titleLabel" text="Label" BorderPane.alignment="CENTER" />
+        <Label fx:id="titleLabel" text="Label" BorderPane.alignment="CENTER"/>
     </top>
     <center>
-        <VBox fx:id="buttonsPane" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="30.0" BorderPane.alignment="CENTER">
+        <VBox fx:id="buttonsPane" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="30.0"
+              BorderPane.alignment="CENTER">
             <children>
-                <MenuButton fx:id="playButton" alignment="CENTER" mnemonicParsing="false" popupSide="RIGHT" text="Play">
+                <MenuButton fx:id="playButton" alignment="CENTER" mnemonicParsing="false" text="Play">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#playFromFile" text="From file..." />
-                        <MenuItem mnemonicParsing="false" onAction="#playFromServer" text="From server..." />
+                        <MenuItem mnemonicParsing="false" onAction="#playFromServer" text="Connect to server..."/>
+                        <MenuItem mnemonicParsing="false" onAction="#playFromFile" text="Open local file..."/>
                     </items>
                 </MenuButton>
-                <Button mnemonicParsing="false" onAction="#startDemo" text="Demo problem" />
-                <Button mnemonicParsing="false" onAction="#showAboutBox" text="About..." />
+                <Button mnemonicParsing="false" onAction="#startDemo" text="Demo problem"/>
+                <Button mnemonicParsing="false" onAction="#showAboutBox" text="About..."/>
             </children>
         </VBox>
     </center>

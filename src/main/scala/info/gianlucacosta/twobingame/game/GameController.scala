@@ -34,6 +34,7 @@ import info.gianlucacosta.helios.Includes._
 import info.gianlucacosta.helios.fx.Includes._
 import info.gianlucacosta.helios.fx.dialogs.{Alerts, InputDialogs}
 import info.gianlucacosta.helios.fx.time.BasicClock
+import info.gianlucacosta.twobinmanager.sdk.server.TwoBinManagerServer
 import info.gianlucacosta.twobinpack.core.{FrameMode, Problem, ProblemBundle, Solution}
 import info.gianlucacosta.twobinpack.io.FileExtensions
 import info.gianlucacosta.twobinpack.io.csv.v2.SolutionCsvWriter2
@@ -67,6 +68,9 @@ private class GameController {
   }
 
 
+  var managerServerOption: Option[TwoBinManagerServer] = _
+
+
   private val _problemBundle =
     new SimpleObjectProperty[ProblemBundle](null)
 
@@ -76,7 +80,6 @@ private class GameController {
   def problemBundle_=(newValue: ProblemBundle) =
     _problemBundle() =
       newValue
-
 
   problemBundle.onChange {
     val problems =
@@ -257,7 +260,11 @@ private class GameController {
         }
 
       case None =>
-        saveSolutionsAndClose()
+        if (saveSolutions()) {
+          Alerts.showInfo("Solutions saved successfully.\n\nThank you for playing! ^__^")
+
+          stage.hide()
+        }
     }
   }
 
@@ -301,7 +308,41 @@ private class GameController {
   }
 
 
-  private def saveSolutionsAndClose(): Unit = {
+  private def saveSolutions(): Boolean = {
+    val solutions =
+      reversedSolutions().reverse
+
+    managerServerOption match {
+      case Some(managerServer) =>
+        if (saveSolutionsToServer(solutions))
+          true
+        else
+          saveSolutionsToFile(solutions)
+
+      case None =>
+        saveSolutionsToFile(solutions)
+    }
+  }
+
+
+  private def saveSolutionsToServer(
+                                     solutions: List[Solution]
+                                   ): Boolean = {
+    val server =
+      managerServerOption.get
+
+    try {
+      server.uploadSolutions(solutions)
+      true
+    } catch {
+      case ex: Exception =>
+        Alerts.showException(ex, alertType = AlertType.Warning)
+        false
+    }
+  }
+
+
+  private def saveSolutionsToFile(solutions: List[Solution]): Boolean = {
     csvSolutionsFileChooser.initialFileName =
       "Solutions" +
         solverOption()
@@ -312,19 +353,13 @@ private class GameController {
       csvSolutionsFileChooser.smartSave(stage)
 
     if (solutionsFile != null) {
-      val solutions =
-        reversedSolutions().reverse
-
       try {
         val solutionsWriter =
           new SolutionCsvWriter2(new FileWriter(solutionsFile))
 
         try {
           solutions.foreach(solutionsWriter.writeSolution)
-
-          Alerts.showInfo("Solutions saved successfully.\n\nThank you for playing! ^__^")
-
-          stage.hide()
+          true
         } finally {
           solutionsWriter.close()
         }
@@ -334,10 +369,12 @@ private class GameController {
             ex,
             alertType = AlertType.Warning
           )
+          false
       }
     }
+    else
+      false
   }
-
 
   @FXML
   def initialize(): Unit = {

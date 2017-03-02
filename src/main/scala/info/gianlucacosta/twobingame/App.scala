@@ -26,6 +26,7 @@ import javafx.stage.Stage
 
 import info.gianlucacosta.helios.apps.{AppInfo, AuroraAppInfo}
 import info.gianlucacosta.helios.fx.application.{AppBase, SplashStage}
+import info.gianlucacosta.twobingame.io.actors.Actors
 import info.gianlucacosta.twobingame.main.MainScene
 import info.gianlucacosta.twobinpack.icons.MainIcon
 import info.gianlucacosta.twobinpack.twobingame.ArtifactInfo
@@ -38,6 +39,8 @@ import scalafx.application.Platform
   */
 class App extends AppBase(AuroraAppInfo(ArtifactInfo, MainIcon)) {
   override def startup(appInfo: AppInfo, splashStage: SplashStage, primaryStage: Stage): Unit = {
+    Actors.start()
+
     Platform.runLater {
       primaryStage.scene =
         new MainScene(appInfo, primaryStage)
@@ -57,5 +60,9 @@ class App extends AppBase(AuroraAppInfo(ArtifactInfo, MainIcon)) {
 
       primaryStage.centerOnScreen()
     }
+  }
+
+  override def stop(): Unit = {
+    Actors.stop()
   }
 }

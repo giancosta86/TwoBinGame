@@ -67,7 +67,7 @@ dependencies {
 
     compile 'org.scala-lang:scala-library:2.11.8'
 
-    compile 'info.gianlucacosta.twobinpack:twobinkernel:2.2'
+    compile 'info.gianlucacosta.twobinpack:twobinmanager-sdk:3.0-SNAPSHOT'
 
     testCompile 'org.scalatest:scalatest_2.11:2.2.6'
     testRuntime 'org.pegdown:pegdown:1.6.0'

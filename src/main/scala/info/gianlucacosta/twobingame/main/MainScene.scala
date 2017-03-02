@@ -28,7 +28,6 @@ import javafx.stage.Stage
 import info.gianlucacosta.helios.apps.AppInfo
 import info.gianlucacosta.helios.fx.scene.fxml.FxmlScene
 
-
 class MainScene(
                  appInfo: AppInfo,
                  primaryStage: Stage

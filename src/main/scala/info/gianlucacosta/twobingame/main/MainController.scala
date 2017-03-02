@@ -28,10 +28,12 @@ import javafx.stage.Stage
 
 import info.gianlucacosta.helios.apps.AppInfo
 import info.gianlucacosta.helios.fx.Includes._
-import info.gianlucacosta.helios.fx.dialogs.Alerts
 import info.gianlucacosta.helios.fx.dialogs.about.AboutBox
+import info.gianlucacosta.helios.fx.dialogs.{Alerts, InputDialogs}
 import info.gianlucacosta.twobingame.DemoProblemBundle
 import info.gianlucacosta.twobingame.game.GameStage
+import info.gianlucacosta.twobingame.io.actors.Actors
+import info.gianlucacosta.twobinmanager.sdk.server.TwoBinManagerServer
 import info.gianlucacosta.twobinpack.core.ProblemBundle
 import info.gianlucacosta.twobinpack.io.FileExtensions
 import info.gianlucacosta.twobinpack.io.bundle.ProblemBundleReader
@@ -86,7 +88,8 @@ class MainController {
             problemBundleReader.readProblemBundle()
 
           gameStage.startGame(
-            problemBundle
+            problemBundle,
+            None
           )
         } finally {
           problemBundleReader.close()
@@ -101,14 +104,61 @@ class MainController {
 
   @FXML
   def playFromServer(): Unit = {
+    val serverHeader =
+      "Enter server coordinates"
 
+    val serverAddressOption =
+      InputDialogs.askForString(
+        message = "Address:",
+        header = serverHeader,
+        initialValue = TwoBinManagerServer.defaultConnectionParams.address
+      )
+
+
+    serverAddressOption.foreach(serverAddress => {
+      val serverPortOption =
+        InputDialogs.askForLong(
+          message = "Port:",
+          header = serverHeader,
+          initialValue = TwoBinManagerServer.defaultConnectionParams.port
+        ).map(_.toInt)
+
+
+      serverPortOption.foreach(serverPort => {
+        try {
+          val connectionParams =
+            TwoBinManagerServer.ConnectionParams(
+              serverAddress,
+              serverPort
+            )
+
+          val server =
+            new TwoBinManagerServer(
+              Actors.actorSystem,
+              connectionParams
+            )
+
+          val problemBundle =
+            server.requestProblemBundle()
+
+          gameStage.startGame(
+            problemBundle,
+            Some(server)
+          )
+        } catch {
+          case ex: Exception =>
+            Alerts.showException(ex, alertType = AlertType.Warning)
+        }
+      })
+    })
   }
 
 
   @FXML
   def startDemo(): Unit = {
     gameStage.startGame(
-      DemoProblemBundle
+      DemoProblemBundle,
+      None
     )
   }
 
