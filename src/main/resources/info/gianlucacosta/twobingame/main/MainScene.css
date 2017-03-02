@@ -21,16 +21,16 @@
 */
 
 #rootPane {
-    -fx-background-color: linear-gradient(to bottom right, #e9f1ff, #91de92);
+    -fx-background-color: linear-gradient(to bottom right, #5069c6, #9016b8);
     -fx-pref-height: 450px;
 }
 
 #titleLabel {
-    -fx-text-fill: linear-gradient(to bottom, mediumslateblue, cornflowerblue);
+    -fx-text-fill: linear-gradient(to bottom, #fff177, #fff8b9);
     -fx-font-family: "Arial";
     -fx-font-size: 56px;
     -fx-font-weight: bold;
-    -fx-padding: 20px 0 0 0;
+    -fx-padding: 40px 0 0 0;
 }
 
 
