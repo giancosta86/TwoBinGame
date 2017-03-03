@@ -57,7 +57,7 @@ class GameStage(
   /**
     * Starts a new game
     *
-    * @param problemBundle The problem bundle
+    * @param problemBundle       The problem bundle
     * @param managerServerOption Connection to a TwoBinManager server
     */
   def startGame(
